@@ -56,6 +56,7 @@ export type SessionUser = {
   handle: string;
   email: string;
   kind: string;
+  role: string;
   verified: boolean;
   avatarHue: number;
   onboarded: boolean;
@@ -72,6 +73,7 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
       handle: true,
       email: true,
       kind: true,
+      role: true,
       verified: true,
       avatarHue: true,
       onboarded: true,

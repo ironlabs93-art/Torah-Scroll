@@ -13,6 +13,7 @@ import {
 } from "@/lib/auth";
 import { bumpAffinity } from "@/lib/feed";
 import { parseVideo } from "@/lib/format";
+import { FLAG_REASONS } from "@/lib/taxonomy";
 
 export type ActionResult = { error?: string; ok?: boolean };
 
@@ -250,6 +251,75 @@ export async function answerQuiz(postId: string, choice: number, pathToRevalidat
   });
   await bumpAffinity(user.id, postId, 0.7);
   revalidatePath(pathToRevalidate);
+}
+
+/* ---------------------------------------------------------- moderation -- */
+
+/**
+ * Flagging hides nothing on its own. It puts the post in a queue for a
+ * moderator, which is deliberate: a report is not a verdict, and letting any
+ * reader take a post down would be its own kind of abuse.
+ */
+export async function flagPost(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
+  const user = await getCurrentUser();
+  if (!user) return { error: "Sign in to report a post" };
+
+  const postId = String(formData.get("postId") ?? "");
+  const reason = String(formData.get("reason") ?? "");
+  const note = String(formData.get("note") ?? "").trim().slice(0, 500);
+
+  if (!postId) return { error: "Missing post" };
+  if (!FLAG_REASONS.some((r) => r.value === reason)) return { error: "Pick a reason" };
+
+  const post = await db.post.findUnique({ where: { id: postId }, select: { id: true } });
+  if (!post) return { error: "That post no longer exists" };
+
+  const existing = await db.flag.findUnique({
+    where: { postId_userId: { postId, userId: user.id } },
+  });
+  if (existing) return { ok: true };
+
+  await db.$transaction([
+    db.flag.create({ data: { postId, userId: user.id, reason, note } }),
+    db.post.update({ where: { id: postId }, data: { flagCount: { increment: 1 } } }),
+  ]);
+
+  revalidatePath(`/post/${postId}`);
+  return { ok: true };
+}
+
+async function requireModerator() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+  const full = await db.user.findUnique({ where: { id: user.id }, select: { role: true } });
+  if (full?.role !== "MODERATOR") redirect("/");
+  return user;
+}
+
+export async function resolveFlags(formData: FormData) {
+  const mod = await requireModerator();
+
+  const postId = String(formData.get("postId") ?? "");
+  const action = String(formData.get("action") ?? "");
+  const note = String(formData.get("note") ?? "").trim().slice(0, 500);
+  if (!postId || !["REMOVE", "KEEP"].includes(action)) return;
+
+  await db.$transaction([
+    db.flag.updateMany({ where: { postId }, data: { resolved: true } }),
+    db.post.update({
+      where: { id: postId },
+      data:
+        action === "REMOVE"
+          ? { status: "REMOVED", removedAt: new Date(), removedWhy: note || "Removed after review" }
+          : { status: "LIVE", removedAt: null, removedWhy: null },
+    }),
+    db.moderationAction.create({
+      data: { postId, moderatorId: mod.id, action, note },
+    }),
+  ]);
+
+  revalidatePath("/moderate");
+  revalidatePath("/");
 }
 
 export async function toggleFollow(targetId: string, pathToRevalidate: string) {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { buildFeed, recordImpressions, type FeedMode } from "@/lib/feed";
+import { refreshDailyTextsInBackground } from "@/lib/daily-import";
 import { db } from "@/lib/db";
 import { PostCard } from "@/components/post-card";
 import { TopBar, CalendarPanel, CalendarStrip, SidebarSection } from "@/components/shell";
@@ -24,6 +25,9 @@ export default async function FeedPage({
   const user = await getCurrentUser();
   if (!user) redirect("/welcome");
   if (!user.onboarded) redirect("/onboarding");
+
+  // Fire and forget: the reader gets their feed whether or not Sefaria answers.
+  void refreshDailyTextsInBackground();
 
   const params = await searchParams;
   const mode = (TABS.find((t) => t.mode === params.tab)?.mode ?? "foryou") as FeedMode;
@@ -52,7 +56,7 @@ export default async function FeedPage({
 
   return (
     <>
-      <TopBar user={user} />
+      <TopBar user={user} isModerator={user?.role === "MODERATOR"} />
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0">
           <CalendarStrip cal={calendar} />

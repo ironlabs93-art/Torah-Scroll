@@ -59,7 +59,7 @@ export default async function TagPage({ params }: { params: Promise<{ slug: stri
 
   return (
     <>
-      <TopBar user={viewer} />
+      <TopBar user={viewer} isModerator={viewer?.role === "MODERATOR"} />
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0">
           <Card className="mb-5 p-6">

@@ -19,6 +19,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
     include: {
       _count: { select: { posts: true, followers: true, following: true } },
       posts: {
+        where: { status: "LIVE" },
         orderBy: { createdAt: "desc" },
         take: 30,
         include: {
@@ -52,7 +53,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ handle
 
   return (
     <>
-      <TopBar user={viewer} />
+      <TopBar user={viewer} isModerator={viewer?.role === "MODERATOR"} />
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0">
           <Card className="mb-5 p-6">

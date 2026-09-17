@@ -47,3 +47,12 @@ export const POST_TYPES = [
   { value: "VIDEO", label: "Video", blurb: "Link a shiur and it plays in the feed" },
   { value: "IMAGE", label: "Diagram", blurb: "A chart or diagram, tagged to a source" },
 ] as const;
+
+export const FLAG_REASONS = [
+  { value: "INAPPROPRIATE", label: "Inappropriate for this app" },
+  { value: "INACCURATE", label: "Misquoted or wrong source" },
+  { value: "SPAM", label: "Spam or self-promotion" },
+  { value: "OTHER", label: "Something else" },
+] as const;
+
+export type FlagReason = (typeof FLAG_REASONS)[number]["value"];

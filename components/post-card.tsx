@@ -110,6 +110,21 @@ export function PostCard({
           </Link>
         )}
 
+        {post.origin === "IMPORT" && (
+          <p className="mt-3 border-t border-parchment-edge/70 pt-2.5 text-xs text-ink-faint">
+            Text from{" "}
+            <a
+              href={post.sourceUrl ?? "https://www.sefaria.org"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-dotted underline-offset-2 hover:text-accent"
+            >
+              Sefaria
+            </a>
+            {post.sourceName ? ` · ${post.sourceName}` : ""}
+          </p>
+        )}
+
         {(post.sourceWork || post.tags.length > 0) && (
           <div className="mt-4 flex flex-wrap items-center gap-2">
             {post.sourceWork && <SourceLine work={post.sourceWork} sourceRef={post.sourceRef} />}

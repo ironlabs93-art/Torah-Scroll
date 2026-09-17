@@ -13,22 +13,34 @@ export function Logo({ className = "" }: { className?: string }) {
           <path d="M9.5 9h5M9.5 12h5M9.5 15h3" strokeLinecap="round" opacity=".6" />
         </svg>
       </span>
-      <span className="text-[19px] font-semibold tracking-tight text-ink">Torah Scroll</span>
+      <span className="whitespace-nowrap text-[19px] font-semibold tracking-tight text-ink">Torah Scroll</span>
     </Link>
   );
 }
 
-export function TopBar({ user }: { user: SessionUser | null }) {
+export function TopBar({ user, isModerator = false }: { user: SessionUser | null; isModerator?: boolean }) {
   return (
     <header className="safe-top sticky top-0 z-30 border-b border-parchment-edge/80 bg-[#f6f1e7]/85 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">
+      <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-4 sm:gap-4">
         <Logo />
         <div className="ml-auto flex items-center gap-2">
           {user ? (
             <>
+              {isModerator && (
+                <Link
+                  href="/moderate"
+                  className="flex shrink-0 items-center gap-1.5 rounded-full border border-parchment-edge px-2.5 py-1.5 text-sm text-ink-soft transition hover:border-accent hover:text-accent-deep sm:px-3"
+                  title="Review queue"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-4 w-4">
+                    <path d="M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6l7-3z" strokeLinejoin="round" />
+                  </svg>
+                  <span className="hidden sm:inline">Review</span>
+                </Link>
+              )}
               <Link
                 href="/compose"
-                className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-white transition hover:bg-accent-deep"
+                className="shrink-0 rounded-full bg-accent px-3.5 py-1.5 text-sm font-medium text-white transition hover:bg-accent-deep sm:px-4"
               >
                 Post
               </Link>

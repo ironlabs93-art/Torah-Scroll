@@ -20,6 +20,8 @@ function rng(seed: number) {
 
 async function main() {
   console.log("Clearing existing data...");
+  await db.moderationAction.deleteMany();
+  await db.flag.deleteMany();
   await db.impression.deleteMany();
   await db.tagAffinity.deleteMany();
   await db.quizResponse.deleteMany();
@@ -70,6 +72,8 @@ async function main() {
         verified: a.verified,
         avatarHue: a.hue,
         onboarded: true,
+        // The demo account moderates so the review queue is reachable.
+        role: a.handle === "demo" ? "MODERATOR" : "MEMBER",
       },
     });
     userIds.set(a.handle, u.id);
@@ -158,6 +162,28 @@ async function main() {
     }
   }
 
+  // One reported post so the review queue has something in it on a fresh seed.
+  console.log("A reported post for the queue...");
+  const reportable = await db.post.create({
+    data: {
+      authorId: userIds.get("dstern")!,
+      type: "TEXT",
+      title: "Selling my sefarim collection, DM me",
+      body: "Full Shas, barely used, plus a complete Mishnah Berurah. Serious offers only. Also I do web design, rates on request.",
+      createdAt: at(0.8),
+    },
+  });
+  await db.postTag.create({ data: { postId: reportable.id, tagId: tagIds.get("daf-yomi")! } });
+  for (const [handle, reason, note] of [
+    ["mkatz", "SPAM", "This is an ad, not learning."],
+    ["shirabloom", "SPAM", ""],
+  ] as const) {
+    await db.flag.create({
+      data: { postId: reportable.id, userId: userIds.get(handle)!, reason, note },
+    });
+  }
+  await db.post.update({ where: { id: reportable.id }, data: { flagCount: 2 } });
+
   console.log("Demo affinities...");
   for (const [slug, score] of [
     ["daf-yomi", 3.2],
@@ -175,8 +201,11 @@ async function main() {
     hearts: await db.heart.count(),
     follows: await db.follow.count(),
     tags: await db.tag.count(),
+    flags: await db.flag.count(),
   });
-  console.log("\nLog in as  demo@torahscroll.test  /  demo1234");
+  console.log("\nLog in as  demo@torahscroll.test  /  demo1234  (this account moderates)");
+  console.log("Review queue at /moderate");
+  console.log("\nRun  npm run sync:texts  to pull today's daf and mishnayos from Sefaria.");
 }
 
 main()

@@ -22,7 +22,7 @@ export default async function ComposePage() {
 
   return (
     <>
-      <TopBar user={user} />
+      <TopBar user={user} isModerator={user?.role === "MODERATOR"} />
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0">
           <h1 className="mb-1 text-3xl font-semibold tracking-tight text-ink">Add to the feed</h1>

@@ -8,6 +8,7 @@ import { TopBar, CalendarPanel, SidebarSection } from "@/components/shell";
 import { PostCard } from "@/components/post-card";
 import { Avatar, Card } from "@/components/ui";
 import { CommentBox } from "@/components/interactions";
+import { FlagButton } from "@/components/flag";
 import type { FeedPost } from "@/lib/feed";
 
 export const dynamic = "force-dynamic";
@@ -31,7 +32,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
       },
     },
   });
-  if (!post) notFound();
+  if (!post || post.status === "REMOVED") notFound();
 
   const [hearted, answered] = user
     ? await Promise.all([
@@ -56,7 +57,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
 
   return (
     <>
-      <TopBar user={user} />
+      <TopBar user={user} isModerator={user?.role === "MODERATOR"} />
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0">
           <Link
@@ -70,6 +71,12 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           </Link>
 
           <PostCard post={feedPost} path={path} showReasons={false} />
+
+          {user && user.id !== post.authorId && (
+            <div className="mt-3 flex justify-end">
+              <FlagButton postId={post.id} />
+            </div>
+          )}
 
           <section className="mt-6">
             <h2 className="mb-3 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-faint">

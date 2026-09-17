@@ -189,6 +189,60 @@ const newUserReasons = await p2.locator('main span:has-text("Today\'s daf")').co
 check("new user sees calendar-matched content", newUserReasons > 0);
 await p2.screenshot({ path: `${SHOTS}/11-newuser-feed.png`, fullPage: true });
 
+console.log("\n== flagging ==");
+await page.goto(`${BASE}/`);
+// Flag a post authored by someone else.
+const targetHref = await page.locator("main a[href^='/post/']").first().getAttribute("href");
+await page.goto(`${BASE}${targetHref}`);
+const flagBtn = page.locator('button[aria-label="Report this post"]');
+check("report control shown on someone else's post", (await flagBtn.count()) > 0);
+if (await flagBtn.count()) {
+  await flagBtn.click();
+  await page.locator('input[value="SPAM"]').check();
+  await page.fill('input[name=note]', "e2e test report");
+  await page.click('button:has-text("Report")');
+  await page.waitForTimeout(2000);
+  check("report acknowledged", (await page.locator("text=Reported. Thank you.").count()) > 0);
+}
+
+console.log("\n== moderation queue ==");
+await page.goto(`${BASE}/moderate`);
+check("moderator reaches the queue", page.url().endsWith("/moderate"));
+const queued = await page.locator("main").innerText();
+check("seeded spam report is queued", /Selling my sefarim/.test(queued));
+await page.screenshot({ path: `${SHOTS}/13-moderate.png`, fullPage: true });
+
+// Remove the seeded spam post and confirm it leaves the feed.
+// Remove the seeded spam specifically, not whichever card happens to be first.
+const queuedBefore = await page.locator('form button:has-text("Remove")').count();
+const spamForm = page.locator("form").filter({ has: page.locator('button:has-text("Remove")') }).first();
+await spamForm.locator('button:has-text("Remove")').click();
+await page.waitForTimeout(2500);
+const queuedAfter = await page.locator('form button:has-text("Remove")').count();
+check("post leaves the review queue", queuedAfter === queuedBefore - 1, `${queuedBefore} -> ${queuedAfter}`);
+check(
+  "removal is recorded in the audit list",
+  (await page.locator('text=Recently removed').count()) > 0
+);
+
+await page.goto(`${BASE}/?tab=foryou`);
+const feedText = await page.locator("main").innerText();
+check("removed post is gone from the feed", !/Selling my sefarim/.test(feedText));
+
+console.log("\n== non-moderator is redirected ==");
+const memberCtx = await browser.newContext();
+const m = await memberCtx.newPage();
+await m.goto(`${BASE}/login`);
+await m.fill("#email", "mkatz@torahscroll.test");
+await m.fill("#password", "demo1234");
+await m.click("button[type=submit]");
+await m.waitForURL(`${BASE}/`, { timeout: 15000 });
+await m.goto(`${BASE}/moderate`);
+await m.waitForTimeout(1200);
+check("member cannot open the queue", !m.url().endsWith("/moderate"), `landed on ${m.url()}`);
+check("member sees no Review link", (await m.locator('a:has-text("Review")').count()) === 0);
+await memberCtx.close();
+
 console.log("\n== mobile layout ==");
 const mob = await browser.newContext({ viewport: { width: 390, height: 844 } });
 const p3 = await mob.newPage();

@@ -15,7 +15,9 @@
     "test:calendar": "tsx scripts/check-calendar.mts",
     "test:e2e": "tsx scripts/e2e.mts",
     "dev:lan": "next dev -H 0.0.0.0",
-    "start:lan": "next start -H 0.0.0.0"
+    "start:lan": "next start -H 0.0.0.0",
+    "test:sefaria": "tsx scripts/check-sefaria.mts",
+    "sync:texts": "tsx scripts/sync-texts.mts"
   },
   "dependencies": {
     "@hebcal/core": "^6.9.2",

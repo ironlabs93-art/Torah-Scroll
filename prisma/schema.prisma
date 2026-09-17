@@ -18,6 +18,8 @@ model User {
   bio          String   @default("")
   // PERSON or ORG. Orgs are users with a verified badge in this POC.
   kind         String   @default("PERSON")
+  // MEMBER | MODERATOR. Moderators can see the flag queue and remove posts.
+  role         String   @default("MEMBER")
   verified     Boolean  @default(false)
   avatarHue    Int      @default(160)
   onboarded    Boolean  @default(false)
@@ -29,6 +31,8 @@ model User {
   quizResponses QuizResponse[]
   affinities    TagAffinity[]
   impressions   Impression[]
+  flags         Flag[]
+  moderated     ModerationAction[]
   following     Follow[]       @relation("follower")
   followers     Follow[]       @relation("following")
 }
@@ -77,11 +81,21 @@ model Post {
   sourceRef  String?
   sourceUrl  String?
 
-  // Moderation hooks — not surfaced in the POC UI, but the columns are here
-  // so graduated exposure and flagging can be layered on without a migration.
-  status    String @default("LIVE")
-  reach     Int    @default(3)
-  flagCount Int    @default(0)
+  // USER for something a person wrote here, IMPORT for text pulled from an
+  // outside library. Imports carry the id they were fetched under so a repeated
+  // sync updates the same row instead of duplicating it.
+  origin     String  @default("USER")
+  externalId String? @unique
+  // Attribution for imported text, shown on the card.
+  sourceName String?
+
+  // LIVE | REMOVED. Removed posts stay in the table so the queue keeps a record.
+  status      String    @default("LIVE")
+  // Reserved for graduated exposure. Not used yet: posts go live to everyone.
+  reach       Int       @default(3)
+  flagCount   Int       @default(0)
+  removedAt   DateTime?
+  removedWhy  String?
 
   heartCount   Int      @default(0)
   commentCount Int      @default(0)
@@ -93,9 +107,11 @@ model Post {
   comments      Comment[]
   quizResponses QuizResponse[]
   impressions   Impression[]
+  flags         Flag[]
 
   @@index([authorId])
   @@index([createdAt])
+  @@index([status])
 }
 
 model PostTag {
@@ -171,4 +187,38 @@ model Impression {
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@id([userId, postId])
+}
+
+// A reader reporting a post. One flag per person per post.
+model Flag {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  // INAPPROPRIATE | INACCURATE | SPAM | OTHER
+  reason    String
+  note      String   @default("")
+  createdAt DateTime @default(now())
+  // Cleared when a moderator decides either way, so the queue empties.
+  resolved  Boolean  @default(false)
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([resolved])
+}
+
+// An audit trail of what a moderator did and why.
+model ModerationAction {
+  id          String   @id @default(cuid())
+  postId      String
+  moderatorId String
+  // REMOVE | KEEP
+  action      String
+  note        String   @default("")
+  createdAt   DateTime @default(now())
+
+  moderator User @relation(fields: [moderatorId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
 }

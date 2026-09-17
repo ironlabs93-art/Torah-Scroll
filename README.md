@@ -28,6 +28,8 @@ so on to see the feed from a different person's side.
 | `npm run db:reset` | Wipe and reseed against today's calendar |
 | `npm run test:calendar` | Print the calendar engine's output for several dates |
 | `npm run test:e2e` | Browser smoke test (needs a server already running) |
+| `npm run test:sefaria` | Parser tests offline; add `-- --live` to hit the real API |
+| `npm run sync:texts` | Pull today's daf, mishnayos and parsha into the feed |
 
 ## Running it on your phone
 
@@ -70,6 +72,56 @@ application code changes, but it is a real step and it is not done here.
 - **Three feeds.** For You (ranked), Today's Learning (calendar matches only),
   Following (chronological).
 - **Tag and profile pages**, and source references that deep-link to Sefaria.
+- **Daily texts imported from Sefaria**, so the feed is never empty.
+- **Reporting and a moderator review queue.**
+
+## Daily texts from Sefaria
+
+The feed has a floor. Today's daf, today's mishnayos and this week's sedra are
+pulled from Sefaria's open library and posted by a `@sefaria` account, so the app
+is useful on a day when nobody posted anything. User content becomes upside
+rather than life support.
+
+```bash
+npm run sync:texts              # today
+npm run sync:texts -- 2026-12-06   # a specific date
+```
+
+The feed also triggers this lazily, at most once a day, and never blocks the
+render: if Sefaria is unreachable the reader still gets their feed.
+
+`lib/sefaria.ts` takes its fetcher as an argument, so the parsing is tested
+against fixtures with no network (`npm run test:sefaria`). That covers both API
+response shapes, HTML stripping, ref building, excerpting and failure handling.
+
+**One caveat, stated plainly.** The environment this was built in blocks outbound
+requests to `www.sefaria.org`, so the parser has been tested against fixtures but
+**the live response has never been seen**. Run `npm run test:sefaria -- --live`
+on a machine with open network access before trusting it. If the shape differs,
+`parseText` is the only function that needs to change.
+
+Licensing varies per text version. Public domain works are unrestricted; several
+modern translations are CC-BY or CC-BY-NC. The version title and license come
+back with each response and are stored on the post and shown on the card. Check
+the license before any commercial use.
+
+## Moderation
+
+Readers can report a post from its page. Reporting does not hide anything on its
+own, which is deliberate: a report is not a verdict, and letting any reader take
+a post down would be its own kind of abuse. Reports land in a queue at
+`/moderate`, open only to accounts with `role = "MODERATOR"`.
+
+A moderator can keep or remove. Removing sets the post to `REMOVED`, which takes
+it out of every feed, profile and tag page and makes its permalink 404, but keeps
+the row and writes a `ModerationAction` so there is a record of what came down
+and why. The seeded `demo` account is a moderator and the seed plants one
+reported post so the queue is not empty.
+
+**Graduated exposure is still not built, and that is now a considered decision
+rather than a gap.** At a few hundred users an "inner circle" is a large share of
+the whole platform and each expansion tier means very little. The columns
+(`Post.reach`) are there for when reach actually needs throttling.
 
 ## The calendar engine
 
@@ -118,16 +170,14 @@ than a tap, which is the entire premise of the app.
 
 ## Deliberately not built yet
 
-**Graduated exposure and moderation.** The concept: a new post goes first to a small inner
-circle, and only widens to a larger audience if it is not flagged, expanding in tiers.
-The database columns for it are already there (`Post.status`, `Post.reach`, `Post.flagCount`),
-so it can be layered on without a migration, but none of it is implemented or surfaced.
-Posts go live to everyone immediately. **This is the single biggest gap between this POC
-and something you could open to the public.**
-
-Also missing: image uploads (diagrams are referenced by URL, with six sample SVGs included),
-real-time notifications, search, direct messages, and any pull from external APIs such as
-Sefaria's text API.
+- **Graduated exposure.** See the moderation section: deferred on purpose until reach
+  needs throttling.
+- **A daily completion state and streak.** The strongest remaining idea, and the one
+  most aligned with the premise: today's learning is finite and completable, unlike an
+  infinite feed.
+- **A daily nudge** by email or push. A habit app with no re-entry trigger forms no habit.
+- **Sharing out** with a link preview. Content in this world spreads through WhatsApp.
+- Image uploads, search, notifications, direct messages.
 
 ## A note on the seeded organizations
 
@@ -156,6 +206,8 @@ app/            routes and server actions
 components/     post card, feed chrome, client interactions
 lib/
   calendar.ts   Hebrew date, Daf Yomi, Mishnah Yomi, parsha, holidays
+  sefaria.ts    text fetching and parsing, network injected for testing
+  daily-import.ts  turns those texts into feed posts, idempotent
   feed.ts       ranking, diversity pass, affinity updates
   auth.ts       password hashing, session cookie
   taxonomy.ts   the tag vocabulary
