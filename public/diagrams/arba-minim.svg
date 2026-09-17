@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 470" width="800" height="470" font-family="Georgia, serif">
+  <rect width="800" height="470" fill="#fbf7f0"/>
+  <text x="400" y="44" text-anchor="middle" font-size="26" fill="#16130f">The Arba Minim</text>
+  <text x="400" y="70" text-anchor="middle" font-size="15" fill="#8b8073">Taste and smell · Vayikra Rabbah 30:12</text>
+  <g>
+    <rect x="50" y="100" width="170" height="230" rx="12" fill="#e3f0ec" stroke="#1e6b5e"/>
+    <text x="135" y="132" text-anchor="middle" font-size="19" fill="#164f46">Esrog</text>
+    <text x="135" y="154" text-anchor="middle" font-size="14" fill="#8b8073">אתרוג</text>
+    <text x="135" y="196" text-anchor="middle" font-size="15" fill="#4a4239">taste ✓</text>
+    <text x="135" y="220" text-anchor="middle" font-size="15" fill="#4a4239">smell ✓</text>
+    <text x="135" y="270" text-anchor="middle" font-size="14" fill="#16130f">Torah and</text>
+    <text x="135" y="290" text-anchor="middle" font-size="14" fill="#16130f">maasim tovim</text>
+  </g>
+  <g>
+    <rect x="240" y="100" width="170" height="230" rx="12" fill="#f6ecd8" stroke="#b4802a"/>
+    <text x="325" y="132" text-anchor="middle" font-size="19" fill="#7d5a1d">Lulav</text>
+    <text x="325" y="154" text-anchor="middle" font-size="14" fill="#8b8073">לולב</text>
+    <text x="325" y="196" text-anchor="middle" font-size="15" fill="#4a4239">taste ✓</text>
+    <text x="325" y="220" text-anchor="middle" font-size="15" fill="#8b8073">smell ✗</text>
+    <text x="325" y="270" text-anchor="middle" font-size="14" fill="#16130f">Torah,</text>
+    <text x="325" y="290" text-anchor="middle" font-size="14" fill="#16130f">no maasim</text>
+  </g>
+  <g>
+    <rect x="430" y="100" width="170" height="230" rx="12" fill="#f6ecd8" stroke="#b4802a"/>
+    <text x="515" y="132" text-anchor="middle" font-size="19" fill="#7d5a1d">Hadas</text>
+    <text x="515" y="154" text-anchor="middle" font-size="14" fill="#8b8073">הדס</text>
+    <text x="515" y="196" text-anchor="middle" font-size="15" fill="#8b8073">taste ✗</text>
+    <text x="515" y="220" text-anchor="middle" font-size="15" fill="#4a4239">smell ✓</text>
+    <text x="515" y="270" text-anchor="middle" font-size="14" fill="#16130f">Maasim,</text>
+    <text x="515" y="290" text-anchor="middle" font-size="14" fill="#16130f">no Torah</text>
+  </g>
+  <g>
+    <rect x="620" y="100" width="130" height="230" rx="12" fill="#efe7d8" stroke="#c9bda4"/>
+    <text x="685" y="132" text-anchor="middle" font-size="19" fill="#4a4239">Aravah</text>
+    <text x="685" y="154" text-anchor="middle" font-size="14" fill="#8b8073">ערבה</text>
+    <text x="685" y="196" text-anchor="middle" font-size="15" fill="#8b8073">taste ✗</text>
+    <text x="685" y="220" text-anchor="middle" font-size="15" fill="#8b8073">smell ✗</text>
+    <text x="685" y="270" text-anchor="middle" font-size="14" fill="#16130f">Neither</text>
+  </g>
+  <text x="400" y="380" text-anchor="middle" font-size="16" fill="#16130f">All four are bound together — that is the point.</text>
+  <text x="400" y="410" text-anchor="middle" font-size="15" fill="#4a4239">Klal Yisrael is not complete when any one of them is left out.</text>
+</svg>

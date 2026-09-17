@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 440" width="800" height="440" font-family="Georgia, serif">
+  <rect width="800" height="440" fill="#fbf7f0"/>
+  <text x="400" y="44" text-anchor="middle" font-size="26" fill="#16130f">Beis Shammai vs. Beis Hillel</text>
+  <text x="400" y="70" text-anchor="middle" font-size="15" fill="#8b8073">How many neiros each night · Shabbos 21b</text>
+  <text x="180" y="112" text-anchor="middle" font-size="19" fill="#7d5a1d">Beis Shammai</text>
+  <text x="180" y="134" text-anchor="middle" font-size="13" fill="#8b8073">counts down — פוחת והולך</text>
+  <text x="600" y="112" text-anchor="middle" font-size="19" fill="#164f46">Beis Hillel</text>
+  <text x="600" y="134" text-anchor="middle" font-size="13" fill="#8b8073">counts up — מוסיף והולך</text>
+  <g font-size="13">
+    <text x="400" y="168" text-anchor="middle" fill="#8b8073">night 1</text>
+    <rect x="300" y="156" width="76" height="16" rx="4" fill="#b4802a"/><text x="292" y="169" text-anchor="end" fill="#4a4239">8</text>
+    <rect x="424" y="156" width="10" height="16" rx="4" fill="#1e6b5e"/><text x="442" y="169" fill="#4a4239">1</text>
+    <text x="400" y="200" text-anchor="middle" fill="#8b8073">night 2</text>
+    <rect x="310" y="188" width="66" height="16" rx="4" fill="#b4802a"/><text x="302" y="201" text-anchor="end" fill="#4a4239">7</text>
+    <rect x="424" y="188" width="19" height="16" rx="4" fill="#1e6b5e"/><text x="451" y="201" fill="#4a4239">2</text>
+    <text x="400" y="232" text-anchor="middle" fill="#8b8073">night 4</text>
+    <rect x="329" y="220" width="47" height="16" rx="4" fill="#b4802a"/><text x="321" y="233" text-anchor="end" fill="#4a4239">5</text>
+    <rect x="424" y="220" width="38" height="16" rx="4" fill="#1e6b5e"/><text x="470" y="233" fill="#4a4239">4</text>
+    <text x="400" y="264" text-anchor="middle" fill="#8b8073">night 6</text>
+    <rect x="348" y="252" width="28" height="16" rx="4" fill="#b4802a"/><text x="340" y="265" text-anchor="end" fill="#4a4239">3</text>
+    <rect x="424" y="252" width="57" height="16" rx="4" fill="#1e6b5e"/><text x="489" y="265" fill="#4a4239">6</text>
+    <text x="400" y="296" text-anchor="middle" fill="#8b8073">night 8</text>
+    <rect x="366" y="284" width="10" height="16" rx="4" fill="#b4802a"/><text x="358" y="297" text-anchor="end" fill="#4a4239">1</text>
+    <rect x="424" y="284" width="76" height="16" rx="4" fill="#1e6b5e"/><text x="508" y="297" fill="#4a4239">8</text>
+  </g>
+  <line x1="60" y1="325" x2="740" y2="325" stroke="#e6dcc9" stroke-width="2"/>
+  <text x="60" y="356" font-size="15" fill="#4a4239">Beis Shammai: the neiros track the bulls of Sukkos, which decrease daily.</text>
+  <text x="60" y="380" font-size="15" fill="#4a4239">Beis Hillel: מעלין בקודש ואין מורידין — in holiness we ascend, never descend.</text>
+  <text x="60" y="412" font-size="15" fill="#164f46">The halacha follows Beis Hillel.</text>
+</svg>

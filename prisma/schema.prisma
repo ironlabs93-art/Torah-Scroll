@@ -1,0 +1,174 @@
+// Torah Scroll — proof of concept schema (SQLite, zero external services)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  handle       String   @unique
+  name         String
+  bio          String   @default("")
+  // PERSON or ORG. Orgs are users with a verified badge in this POC.
+  kind         String   @default("PERSON")
+  verified     Boolean  @default(false)
+  avatarHue    Int      @default(160)
+  onboarded    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  posts         Post[]
+  comments      Comment[]
+  hearts        Heart[]
+  quizResponses QuizResponse[]
+  affinities    TagAffinity[]
+  impressions   Impression[]
+  following     Follow[]       @relation("follower")
+  followers     Follow[]       @relation("following")
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@index([followingId])
+}
+
+model Tag {
+  id     String  @id @default(cuid())
+  slug   String  @unique
+  label  String
+  hebrew String?
+  // TRACK (daf-yomi, mishnah-yomi...), HOLIDAY, TOPIC, SOURCE
+  kind   String  @default("TOPIC")
+
+  posts      PostTag[]
+  affinities TagAffinity[]
+}
+
+model Post {
+  id       String @id @default(cuid())
+  authorId String
+  // TEXT | QUIZ | VIDEO | IMAGE
+  type     String
+
+  title String?
+  body  String?
+
+  videoUrl String?
+  imageUrl String?
+  imageAlt String?
+  // JSON: { question, choices: string[], answerIndex, explanation }
+  quizJson String?
+
+  // Where in Torah this sits: work + reference, e.g. "Chullin" / "140a", "Berakhot" / "1:3"
+  sourceWork String?
+  sourceRef  String?
+  sourceUrl  String?
+
+  // Moderation hooks — not surfaced in the POC UI, but the columns are here
+  // so graduated exposure and flagging can be layered on without a migration.
+  status    String @default("LIVE")
+  reach     Int    @default(3)
+  flagCount Int    @default(0)
+
+  heartCount   Int      @default(0)
+  commentCount Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  author        User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags          PostTag[]
+  hearts        Heart[]
+  comments      Comment[]
+  quizResponses QuizResponse[]
+  impressions   Impression[]
+
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model PostTag {
+  postId String
+  tagId  String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@index([tagId])
+}
+
+model Heart {
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+  @@index([postId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  authorId  String
+  body      String
+  createdAt DateTime @default(now())
+
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+}
+
+model QuizResponse {
+  userId    String
+  postId    String
+  choice    Int
+  correct   Boolean
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+}
+
+// What the feed has learned about a user: weight per tag, nudged by hearts,
+// comments, quiz answers and follows.
+model TagAffinity {
+  userId String
+  tagId  String
+  score  Float  @default(0)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([userId, tagId])
+}
+
+// Already-shown posts, so the feed moves forward instead of looping.
+model Impression {
+  userId    String
+  postId    String
+  count     Int      @default(1)
+  lastSeen  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@id([userId, postId])
+}

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520" font-family="Georgia, serif">
+  <rect width="800" height="520" fill="#fbf7f0"/>
+  <text x="400" y="44" text-anchor="middle" font-size="26" fill="#16130f">Anatomy of a Daf</text>
+  <text x="400" y="70" text-anchor="middle" font-size="15" fill="#8b8073">The standard Vilna page layout</text>
+  <rect x="180" y="95" width="440" height="330" fill="#fffdf8" stroke="#c9bda4" stroke-width="2"/>
+  <rect x="300" y="150" width="200" height="220" fill="#f3ece0" stroke="#1e6b5e" stroke-width="2"/>
+  <text x="400" y="250" text-anchor="middle" font-size="17" fill="#164f46">Gemara text</text>
+  <text x="400" y="274" text-anchor="middle" font-size="14" fill="#4a4239">Mishnah + Gemara</text>
+  <rect x="196" y="150" width="96" height="220" fill="#f6ecd8" stroke="#b4802a"/>
+  <text x="244" y="252" text-anchor="middle" font-size="15" fill="#7d5a1d">Rashi</text>
+  <text x="244" y="272" text-anchor="middle" font-size="12" fill="#8b8073">inner margin</text>
+  <rect x="508" y="150" width="96" height="220" fill="#f6ecd8" stroke="#b4802a"/>
+  <text x="556" y="252" text-anchor="middle" font-size="15" fill="#7d5a1d">Tosafos</text>
+  <text x="556" y="272" text-anchor="middle" font-size="12" fill="#8b8073">outer margin</text>
+  <rect x="196" y="112" width="408" height="30" fill="#efe7d8" stroke="#c9bda4"/>
+  <text x="400" y="132" text-anchor="middle" font-size="14" fill="#4a4239">Masechta name · perek name · daf number</text>
+  <rect x="196" y="380" width="408" height="32" fill="#efe7d8" stroke="#c9bda4"/>
+  <text x="400" y="401" text-anchor="middle" font-size="13" fill="#4a4239">Mesoras HaShas · Ein Mishpat · Hagahos HaBach</text>
+  <text x="180" y="455" font-size="15" fill="#4a4239">Every daf has two sides: amud alef (א) then amud beis (ב).</text>
+  <text x="180" y="480" font-size="15" fill="#4a4239">Numbering starts at daf 2 — there is no daf 1 in any masechta.</text>
+  <text x="180" y="505" font-size="14" fill="#8b8073">The page break is identical in nearly every printing, so "Berachos 7b" means the same page worldwide.</text>
+</svg>

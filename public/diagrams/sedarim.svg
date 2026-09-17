@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" width="800" height="460" font-family="Georgia, serif">
+  <rect width="800" height="460" fill="#fbf7f0"/>
+  <text x="400" y="46" text-anchor="middle" font-size="26" fill="#16130f">The Six Sedarim of the Mishnah</text>
+  <text x="400" y="72" text-anchor="middle" font-size="15" fill="#8b8073">63 masechtos · 525 perakim</text>
+  <g font-size="15">
+    <g>
+      <rect x="40" y="105" width="230" height="100" rx="10" fill="#e3f0ec" stroke="#1e6b5e"/>
+      <text x="56" y="132" font-size="18" fill="#164f46">Zeraim · זרעים</text>
+      <text x="56" y="156" fill="#4a4239">Agriculture, brachos</text>
+      <text x="56" y="178" fill="#8b8073">11 masechtos</text>
+    </g>
+    <g>
+      <rect x="285" y="105" width="230" height="100" rx="10" fill="#f6ecd8" stroke="#b4802a"/>
+      <text x="301" y="132" font-size="18" fill="#7d5a1d">Moed · מועד</text>
+      <text x="301" y="156" fill="#4a4239">Shabbos &amp; Yom Tov</text>
+      <text x="301" y="178" fill="#8b8073">12 masechtos</text>
+    </g>
+    <g>
+      <rect x="530" y="105" width="230" height="100" rx="10" fill="#e3f0ec" stroke="#1e6b5e"/>
+      <text x="546" y="132" font-size="18" fill="#164f46">Nashim · נשים</text>
+      <text x="546" y="156" fill="#4a4239">Marriage &amp; divorce</text>
+      <text x="546" y="178" fill="#8b8073">7 masechtos</text>
+    </g>
+    <g>
+      <rect x="40" y="230" width="230" height="100" rx="10" fill="#f6ecd8" stroke="#b4802a"/>
+      <text x="56" y="257" font-size="18" fill="#7d5a1d">Nezikin · נזיקין</text>
+      <text x="56" y="281" fill="#4a4239">Damages, courts, Avos</text>
+      <text x="56" y="303" fill="#8b8073">10 masechtos</text>
+    </g>
+    <g>
+      <rect x="285" y="230" width="230" height="100" rx="10" fill="#e3f0ec" stroke="#1e6b5e"/>
+      <text x="301" y="257" font-size="18" fill="#164f46">Kodashim · קדשים</text>
+      <text x="301" y="281" fill="#4a4239">Korbanos, Beis HaMikdash</text>
+      <text x="301" y="303" fill="#8b8073">11 masechtos</text>
+    </g>
+    <g>
+      <rect x="530" y="230" width="230" height="100" rx="10" fill="#f6ecd8" stroke="#b4802a"/>
+      <text x="546" y="257" font-size="18" fill="#7d5a1d">Taharos · טהרות</text>
+      <text x="546" y="281" fill="#4a4239">Purity &amp; impurity</text>
+      <text x="546" y="303" fill="#8b8073">12 masechtos</text>
+    </g>
+  </g>
+  <line x1="40" y1="362" x2="760" y2="362" stroke="#e6dcc9" stroke-width="2"/>
+  <text x="40" y="392" font-size="15" fill="#4a4239">Mnemonic (Shabbos 31a): אמונת עתך חסן ישועות חכמת ודעת</text>
+  <text x="40" y="416" font-size="14" fill="#8b8073">Each word of Yeshayahu 33:6 is read as a hint to one seder, in order.</text>
+</svg>

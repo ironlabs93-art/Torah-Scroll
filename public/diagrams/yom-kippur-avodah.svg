@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520" font-family="Georgia, serif">
+  <rect width="800" height="520" fill="#fbf7f0"/>
+  <text x="400" y="44" text-anchor="middle" font-size="26" fill="#16130f">The Yom Kippur Avodah</text>
+  <text x="400" y="70" text-anchor="middle" font-size="15" fill="#8b8073">Order of the Kohen Gadol's service · Mishnah Yoma</text>
+  <g font-size="15">
+    <g><circle cx="80" cy="120" r="19" fill="#1e6b5e"/><text x="80" y="126" text-anchor="middle" font-size="15" fill="#fbf7f0">1</text>
+      <text x="118" y="115" font-size="17" fill="#16130f">Seven days of separation</text>
+      <text x="118" y="137" fill="#4a4239">The Kohen Gadol withdraws to the Lishkas Parhedrin</text></g>
+    <g><circle cx="80" cy="190" r="19" fill="#1e6b5e"/><text x="80" y="196" text-anchor="middle" font-size="15" fill="#fbf7f0">2</text>
+      <text x="118" y="185" font-size="17" fill="#16130f">Vidui over his own household</text>
+      <text x="118" y="207" fill="#4a4239">Confession over the par, then over the kohanim</text></g>
+    <g><circle cx="80" cy="260" r="19" fill="#b4802a"/><text x="80" y="266" text-anchor="middle" font-size="15" fill="#fbf7f0">3</text>
+      <text x="118" y="255" font-size="17" fill="#16130f">The two goats — goralos</text>
+      <text x="118" y="277" fill="#4a4239">Lots drawn: one לה׳, one לעזאזל</text></g>
+    <g><circle cx="80" cy="330" r="19" fill="#1e6b5e"/><text x="80" y="336" text-anchor="middle" font-size="15" fill="#fbf7f0">4</text>
+      <text x="118" y="325" font-size="17" fill="#16130f">Ketores in the Kodesh HaKodashim</text>
+      <text x="118" y="347" fill="#4a4239">The one day a year anyone enters</text></g>
+    <g><circle cx="80" cy="400" r="19" fill="#b4802a"/><text x="80" y="406" text-anchor="middle" font-size="15" fill="#fbf7f0">5</text>
+      <text x="118" y="395" font-size="17" fill="#16130f">The sa'ir la'azazel is sent</text>
+      <text x="118" y="417" fill="#4a4239">Carrying the vidui of all of Klal Yisrael</text></g>
+    <g><circle cx="80" cy="470" r="19" fill="#1e6b5e"/><text x="80" y="476" text-anchor="middle" font-size="15" fill="#fbf7f0">6</text>
+      <text x="118" y="465" font-size="17" fill="#16130f">Ne'ilah and the closing of the gates</text></g>
+  </g>
+  <line x1="80" y1="139" x2="80" y2="171" stroke="#c9bda4" stroke-width="2"/>
+  <line x1="80" y1="209" x2="80" y2="241" stroke="#c9bda4" stroke-width="2"/>
+  <line x1="80" y1="279" x2="80" y2="311" stroke="#c9bda4" stroke-width="2"/>
+  <line x1="80" y1="349" x2="80" y2="381" stroke="#c9bda4" stroke-width="2"/>
+  <line x1="80" y1="419" x2="80" y2="451" stroke="#c9bda4" stroke-width="2"/>
+</svg>

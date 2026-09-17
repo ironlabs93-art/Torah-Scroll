@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: #f6f1e7;
+  color: #16130f;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle parchment grain so the feed doesn't read as a generic social app. */
+.parchment-bg {
+  background-color: #f6f1e7;
+  background-image: radial-gradient(circle at 20% 10%, rgba(180, 128, 42, 0.05), transparent 45%),
+    radial-gradient(circle at 85% 70%, rgba(30, 107, 94, 0.05), transparent 45%);
+}
+
+.hebrew {
+  font-family: "Frank Ruehl CLM", "Times New Roman", David, serif;
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+
+.scroll-snap {
+  scroll-snap-type: y proximity;
+}
+.scroll-snap > * {
+  scroll-snap-align: start;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f0e9db;
+}
+::-webkit-scrollbar-thumb {
+  background: #d8cdb6;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c4b696;
+}
