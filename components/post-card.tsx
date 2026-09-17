@@ -45,7 +45,7 @@ export function PostCard({
         </div>
       )}
 
-      <div className="p-5">
+      <div className="p-4 sm:p-5">
         <div className="mb-3 flex items-start gap-3">
           <Link href={`/u/${post.author.handle}`}>
             <Avatar
@@ -76,7 +76,7 @@ export function PostCard({
 
         {post.title && (
           <Link href={`/post/${post.id}`}>
-            <h2 className="mb-2 text-[21px] font-semibold leading-snug text-ink hover:underline">
+            <h2 className="mb-2 text-[19px] font-semibold leading-snug text-ink hover:underline sm:text-[21px]">
               {post.title}
             </h2>
           </Link>
@@ -87,7 +87,7 @@ export function PostCard({
         )}
 
         {post.body && (
-          <div className="whitespace-pre-line text-[17px] leading-[1.65] text-ink-soft">
+          <div className="whitespace-pre-line text-[15.5px] leading-[1.6] text-ink-soft sm:text-[17px] sm:leading-[1.65]">
             {post.body}
           </div>
         )}

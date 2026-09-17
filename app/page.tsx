@@ -4,16 +4,16 @@ import { getCurrentUser } from "@/lib/auth";
 import { buildFeed, recordImpressions, type FeedMode } from "@/lib/feed";
 import { db } from "@/lib/db";
 import { PostCard } from "@/components/post-card";
-import { TopBar, CalendarPanel, SidebarSection } from "@/components/shell";
+import { TopBar, CalendarPanel, CalendarStrip, SidebarSection } from "@/components/shell";
 import { Avatar, EmptyState } from "@/components/ui";
 import { FollowButton } from "@/components/interactions";
 
 export const dynamic = "force-dynamic";
 
-const TABS: { mode: FeedMode; label: string; blurb: string }[] = [
-  { mode: "foryou", label: "For You", blurb: "Ranked by what you learn and what today is" },
-  { mode: "today", label: "Today's Learning", blurb: "Only what lines up with the calendar" },
-  { mode: "following", label: "Following", blurb: "Newest first, from accounts you follow" },
+const TABS: { mode: FeedMode; label: string; short: string; blurb: string }[] = [
+  { mode: "foryou", label: "For You", short: "For You", blurb: "Ranked by what you learn and what today is" },
+  { mode: "today", label: "Today's Learning", short: "Today", blurb: "Only what lines up with the calendar" },
+  { mode: "following", label: "Following", short: "Following", blurb: "Newest first, from accounts you follow" },
 ];
 
 export default async function FeedPage({
@@ -55,18 +55,20 @@ export default async function FeedPage({
       <TopBar user={user} />
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <main className="min-w-0">
+          <CalendarStrip cal={calendar} />
           <nav className="mb-1 flex gap-1 rounded-full border border-parchment-edge bg-[#fffdf8] p-1">
             {TABS.map((t) => (
               <Link
                 key={t.mode}
                 href={t.mode === "foryou" ? "/" : `/?tab=${t.mode}`}
-                className={`flex-1 rounded-full px-3 py-2 text-center text-sm font-medium transition ${
+                className={`flex-1 whitespace-nowrap rounded-full px-3 py-2 text-center text-sm font-medium transition ${
                   t.mode === mode
                     ? "bg-accent text-white"
                     : "text-ink-soft hover:bg-parchment-deep"
                 }`}
               >
-                {t.label}
+                <span className="sm:hidden">{t.short}</span>
+                <span className="hidden sm:inline">{t.label}</span>
               </Link>
             ))}
           </nav>

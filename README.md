@@ -29,6 +29,37 @@ so on to see the feed from a different person's side.
 | `npm run test:calendar` | Print the calendar engine's output for several dates |
 | `npm run test:e2e` | Browser smoke test (needs a server already running) |
 
+## Running it on your phone
+
+The app is built mobile-first and installs to the home screen as a PWA, so it
+opens full screen without browser chrome.
+
+**Same wifi (fastest, about two minutes).** Start the server bound to all
+interfaces, then open your computer's LAN address on the phone:
+
+```bash
+npm run dev:lan          # or: npm run build && npm run start:lan
+```
+
+Find your computer's address with `ipconfig getifaddr en0` on macOS or
+`hostname -I` on Linux, then visit `http://<that-address>:3000` on the phone.
+Both devices need to be on the same network, and the computer has to stay running.
+
+**Add it to the home screen.** Once the page is open: on iOS, Share then "Add to
+Home Screen"; on Android, the menu then "Install app". It gets its own icon and
+launches without the address bar, which is the point for something meant to
+replace a scrolling habit.
+
+**Showing it to someone remote.** Run the server and put a tunnel in front of it,
+for example `npx cloudflared tunnel --url http://localhost:3000` or `ngrok http
+3000`. You get a temporary public URL. Good for a demo, not for anything lasting.
+
+**Real hosting.** SQLite will not work on Vercel or similar serverless hosts,
+whose filesystems are read-only and ephemeral. You would need to point
+`DATABASE_URL` at hosted Postgres (Neon, Supabase, Vercel Postgres) and change
+the `provider` in `prisma/schema.prisma` from `sqlite` to `postgresql`. No
+application code changes, but it is a real step and it is not done here.
+
 ## What works
 
 - **Email and password accounts.** Hashed with bcrypt, session in a signed httpOnly

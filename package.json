@@ -13,7 +13,9 @@
     "db:reset": "prisma db push --skip-generate && npm run db:seed",
     "setup": "prisma generate && prisma db push && npm run db:seed",
     "test:calendar": "tsx scripts/check-calendar.mts",
-    "test:e2e": "tsx scripts/e2e.mts"
+    "test:e2e": "tsx scripts/e2e.mts",
+    "dev:lan": "next dev -H 0.0.0.0",
+    "start:lan": "next start -H 0.0.0.0"
   },
   "dependencies": {
     "@hebcal/core": "^6.9.2",

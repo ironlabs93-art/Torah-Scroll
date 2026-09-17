@@ -10,6 +10,16 @@ body {
   background: #f6f1e7;
   color: #16130f;
   -webkit-font-smoothing: antialiased;
+  /* viewportFit:cover paints under the notch and home indicator, so keep the
+     left/right/bottom gutters clear. The sticky header handles its own top. */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Installed to the home screen, the header sits beneath the status bar. */
+.safe-top {
+  padding-top: env(safe-area-inset-top);
 }
 
 /* Subtle parchment grain so the feed doesn't read as a generic social app. */
