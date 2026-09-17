@@ -220,6 +220,46 @@ check(
 // Right-to-left rendering needs Hebrew-majority text, which arrives with the
 // Sefaria import. The heuristic itself is unit-tested in check-sefaria.mts.
 
+console.log("\n== subscriptions ==");
+await page.goto(`${BASE}/sources`);
+const srcText = await page.locator("main").innerText();
+check("subscriptions page loads", /Subscriptions/.test(srcText));
+check("built-in daily texts are live", /Daily Texts/.test(srcText));
+check("external sources are held back", /not switched on yet/i.test(srcText));
+check("All Daf listed but not enabled", /All Daf/.test(srcText));
+check("setup note explains what is missing", /permission/i.test(srcText));
+check("moderator sees setup controls", (await page.locator('form input[name="feedRef"]').count()) > 0);
+await page.screenshot({ path: `${SHOTS}/14-sources.png`, fullPage: true });
+
+// Refusing a vanity URL rather than guessing a channel id.
+const ytForm = page.locator("form").filter({ has: page.locator('input[name="feedRef"]') }).last();
+await ytForm.locator('input[name="feedRef"]').fill("https://www.youtube.com/@MDYdaf");
+await ytForm.locator('input[name="enabled"]').check();
+await ytForm.locator('button:has-text("Save")').click();
+await page.waitForTimeout(1800);
+check(
+  "a handle URL is refused, not guessed at",
+  (await page.locator("text=/does not contain the channel id/").count()) > 0
+);
+
+// A real channel id is accepted.
+await ytForm.locator('input[name="feedRef"]').fill("UC1234567890123456789012");
+await ytForm.locator('button:has-text("Save")').click();
+await page.waitForTimeout(1800);
+check("a UC id is accepted", (await page.locator("text=Saved.").count()) > 0);
+
+console.log("\n== subscribing ==");
+await page.goto(`${BASE}/sources`);
+const subBtn = page.locator('button:has-text("Follow")').first();
+if (await subBtn.count()) {
+  await subBtn.click();
+  await page.waitForTimeout(1500);
+  await page.reload();
+  check("subscription sticks", (await page.locator('button:has-text("Following")').count()) > 0);
+} else {
+  check("already subscribed to every live channel", true);
+}
+
 console.log("\n== flagging ==");
 await page.goto(`${BASE}/`);
 // Flag a post authored by someone else.

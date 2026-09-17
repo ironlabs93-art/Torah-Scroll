@@ -39,6 +39,12 @@ export function TopBar({ user, isModerator = false }: { user: SessionUser | null
                 </Link>
               )}
               <Link
+                href="/sources"
+                className="hidden shrink-0 rounded-full border border-parchment-edge px-3 py-1.5 text-sm text-ink-soft transition hover:border-accent hover:text-accent-deep sm:block"
+              >
+                Channels
+              </Link>
+              <Link
                 href="/compose"
                 className="shrink-0 rounded-full bg-accent px-3.5 py-1.5 text-sm font-medium text-white transition hover:bg-accent-deep sm:px-4"
               >

@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { ALL_TAGS } from "../lib/taxonomy.js";
 import { getDailyLearning } from "../lib/calendar.js";
 import { ACCOUNTS, EVERGREEN, COMMENTS, calendarContent, type SeedPost } from "./seed-content.js";
+import { SOURCE_CATALOG } from "../lib/source-catalog.js";
 
 const db = new PrismaClient();
 const DAY = 1000 * 60 * 60 * 24;
@@ -20,6 +21,7 @@ function rng(seed: number) {
 
 async function main() {
   console.log("Clearing existing data...");
+  await db.source.deleteMany();
   await db.moderationAction.deleteMany();
   await db.flag.deleteMany();
   await db.impression.deleteMany();
@@ -184,6 +186,50 @@ async function main() {
   }
   await db.post.update({ where: { id: reportable.id }, data: { flagCount: 2 } });
 
+  console.log("Source catalogue...");
+  for (const entry of SOURCE_CATALOG) {
+    const account =
+      (await db.user.findUnique({ where: { handle: entry.handle }, select: { id: true } })) ??
+      (await db.user.create({
+        data: {
+          handle: entry.handle,
+          name: entry.name,
+          email: `${entry.handle}@torahscroll.local`,
+          // Nobody signs in as a source account; it exists to own imported rows.
+          passwordHash: "x",
+          bio: entry.description,
+          kind: "ORG",
+          verified: true,
+          avatarHue: entry.hue,
+          onboarded: true,
+        },
+      }));
+
+    await db.source.create({
+      data: {
+        slug: entry.slug,
+        name: entry.name,
+        description: entry.description,
+        kind: entry.kind,
+        feedRef: entry.feedRef ?? null,
+        siteUrl: entry.siteUrl ?? null,
+        accountId: account.id,
+        enabled: entry.enabled,
+        setupNote: entry.setupNote,
+      },
+    });
+
+    // Tag the account so its imports inherit sensible tags.
+    for (const slug of entry.tags) {
+      const tagId = tagIds.get(slug);
+      if (!tagId) continue;
+      const seedPost = await db.post.findFirst({ where: { authorId: account.id }, select: { id: true } });
+      if (seedPost) {
+        await db.postTag.create({ data: { postId: seedPost.id, tagId } }).catch(() => undefined);
+      }
+    }
+  }
+
   console.log("Demo affinities...");
   for (const [slug, score] of [
     ["daf-yomi", 3.2],
@@ -202,10 +248,13 @@ async function main() {
     follows: await db.follow.count(),
     tags: await db.tag.count(),
     flags: await db.flag.count(),
+    sources: await db.source.count(),
   });
   console.log("\nLog in as  demo@torahscroll.test  /  demo1234  (this account moderates)");
   console.log("Review queue at /moderate");
-  console.log("\nRun  npm run sync:texts  to pull today's daf and mishnayos from Sefaria.");
+  console.log("\nRun  npm run sync:texts    for today's daf and mishnayos");
+  console.log("Run  npm run sync:sources  to pull every enabled channel");
+  console.log("Subscriptions page at /sources");
 }
 
 main()

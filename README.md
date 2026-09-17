@@ -30,6 +30,8 @@ so on to see the feed from a different person's side.
 | `npm run test:e2e` | Browser smoke test (needs a server already running) |
 | `npm run test:sefaria` | Parser tests offline; add `-- --live` to hit the real API |
 | `npm run sync:texts` | Pull today's daf, mishnayos and parsha into the feed |
+| `npm run test:sources` | Feed parser tests offline; `-- --live UCxxxx` fetches a real channel |
+| `npm run sync:sources` | Pull recent items from every enabled channel |
 
 ## Running it on your phone
 
@@ -78,6 +80,52 @@ application code changes, but it is a real step and it is not done here.
   the full text. Hebrew-majority paragraphs render right to left in their own face.
 - **Daily texts imported from Sefaria**, so the feed is never empty.
 - **Reporting and a moderator review queue.**
+- **Subscribable channels**: YouTube, RSS and the built-in daily texts.
+
+## Subscriptions
+
+`/sources` lists channels a reader can subscribe to. Subscribing is following:
+every source owns a `User` account, so its posts flow through the same ranking,
+profile pages and feeds as anything else, and a shiur on today's daf still rises
+on the calendar match. There is no parallel subscription concept to keep in sync.
+
+Three kinds of source:
+
+| Kind | Feed | Produces |
+| --- | --- | --- |
+| `YOUTUBE` | the channel's public Atom feed, no API key or quota | video posts that play through YouTube's embed |
+| `RSS` | any RSS or Atom feed: a podcast, a shiur series, a blog | text posts linking to the publisher |
+| `BUILTIN_TEXT` | assembled here from Sefaria | the daily texts below |
+
+```bash
+npm run sync:sources
+```
+
+Imports are idempotent on `externalId`, capped at six items a run so a back
+catalogue cannot flood the feed, and a re-sync never moves an item's date, so
+nothing old resurfaces at the top of everyone's feed. An unreachable feed
+records the error on the source and creates nothing.
+
+### What gets copied, and what does not
+
+Titles, the publisher's own summary, a date and a link. **No media is ever
+rehosted.** A YouTube item plays through YouTube's player, which is what embeds
+are for and sends the view back to the channel; a podcast item links out.
+
+### Why external sources ship switched off
+
+The catalogue in `lib/source-catalog.ts` includes All Daf, All Mishnah and
+Rabbi Eli Stefansky's Daf Yomi channel. All three ship **disabled**, each with a
+note saying what is missing.
+
+Two things usually are. One is a feed address: a YouTube `@handle` URL does not
+contain the channel id, and the code refuses to guess one rather than silently
+importing the wrong channel's videos under the right name. The other is
+permission. Embedding a public video is ordinary use, but arriving at an
+organization with their catalogue already syndicated is a poor way to open a
+conversation, and these are exactly the partners the project wants.
+
+A moderator supplies the feed and switches a source on at `/sources`.
 
 ## Daily texts from Sefaria
 

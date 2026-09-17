@@ -25,6 +25,7 @@ model User {
   onboarded    Boolean  @default(false)
   createdAt    DateTime @default(now())
 
+  source        Source?
   posts         Post[]
   comments      Comment[]
   hearts        Heart[]
@@ -221,4 +222,39 @@ model ModerationAction {
   moderator User @relation(fields: [moderatorId], references: [id], onDelete: Cascade)
 
   @@index([postId])
+}
+
+/**
+ * A channel a reader can subscribe to: a YouTube channel, a podcast or blog
+ * feed, or one of the built-in daily texts.
+ *
+ * Every source owns a User account, so subscribing is just following and the
+ * ranking, profile pages and feeds all work without a parallel concept.
+ */
+model Source {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  description String  @default("")
+  // YOUTUBE | RSS | BUILTIN_TEXT
+  kind        String
+  // YouTube channel id (UC...) for YOUTUBE, or the feed URL for RSS.
+  feedRef     String?
+  siteUrl     String?
+
+  // The account imported items are posted under.
+  accountId String @unique
+  account   User   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  // Off until someone turns it on. External sources ship disabled: syndicating
+  // a publisher's catalogue before asking them is a bad way to meet them.
+  enabled Boolean @default(false)
+  // Set when the operator still has to obtain permission or supply a channel id.
+  setupNote String @default("")
+
+  lastSyncedAt DateTime?
+  lastError    String?
+  createdAt    DateTime  @default(now())
+
+  @@index([enabled])
 }

@@ -14,6 +14,7 @@ import {
 import { bumpAffinity } from "@/lib/feed";
 import { parseVideo } from "@/lib/format";
 import { FLAG_REASONS } from "@/lib/taxonomy";
+import { parseChannelId } from "@/lib/sources";
 
 export type ActionResult = { error?: string; ok?: boolean };
 
@@ -320,6 +321,48 @@ export async function resolveFlags(formData: FormData) {
 
   revalidatePath("/moderate");
   revalidatePath("/");
+}
+
+/* ------------------------------------------------------------- sources -- */
+
+/** Point a source at its feed and switch it on. Moderators only. */
+export async function configureSource(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
+  await requireModerator();
+
+  const id = String(formData.get("sourceId") ?? "");
+  const feedInput = String(formData.get("feedRef") ?? "").trim();
+  const enabled = formData.get("enabled") === "on";
+
+  const source = await db.source.findUnique({ where: { id } });
+  if (!source) return { error: "No such source" };
+
+  let feedRef = source.feedRef;
+  if (feedInput) {
+    if (source.kind === "YOUTUBE") {
+      const parsed = parseChannelId(feedInput);
+      if ("error" in parsed) return { error: parsed.error };
+      feedRef = parsed.channelId;
+    } else if (source.kind === "RSS") {
+      try {
+        const u = new URL(feedInput);
+        if (u.protocol !== "https:" && u.protocol !== "http:") throw new Error();
+        feedRef = u.toString();
+      } catch {
+        return { error: "That is not a valid feed URL" };
+      }
+    }
+  }
+
+  if (enabled && source.kind !== "BUILTIN_TEXT" && !feedRef) {
+    return { error: "Add a channel id or feed URL before enabling this source" };
+  }
+
+  await db.source.update({
+    where: { id },
+    data: { feedRef, enabled, setupNote: enabled ? "" : source.setupNote },
+  });
+  revalidatePath("/sources");
+  return { ok: true };
 }
 
 export async function toggleFollow(targetId: string, pathToRevalidate: string) {

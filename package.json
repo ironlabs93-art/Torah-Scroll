@@ -17,13 +17,16 @@
     "dev:lan": "next dev -H 0.0.0.0",
     "start:lan": "next start -H 0.0.0.0",
     "test:sefaria": "tsx scripts/check-sefaria.mts",
-    "sync:texts": "tsx scripts/sync-texts.mts"
+    "sync:texts": "tsx scripts/sync-texts.mts",
+    "test:sources": "tsx scripts/check-sources.mts",
+    "sync:sources": "tsx scripts/sync-sources.mts"
   },
   "dependencies": {
     "@hebcal/core": "^6.9.2",
     "@hebcal/learning": "^6.11.3",
     "@prisma/client": "^6.1.0",
     "bcryptjs": "^2.4.3",
+    "fast-xml-parser": "^5.11.1",
     "jose": "^5.9.6",
     "next": "^15.1.3",
     "react": "^19.0.0",
