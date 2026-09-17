@@ -55,6 +55,13 @@ export const ACCOUNTS = [
 /** Evergreen content: always in the feed regardless of the date. */
 export const EVERGREEN: SeedPost[] = [
   {
+    author: "maggid", type: "TEXT", ago: 1.1, hearts: 264,
+    title: "The four who entered the pardes, read slowly",
+    body: "Chagigah 14b tells it in a few lines and then moves on, which is part of why it unsettles people.\n\nFour entered the pardes: Ben Azzai, Ben Zoma, Acher, and Rabbi Akiva. Ben Azzai looked and died. Ben Zoma looked and was harmed. Acher cut down the shoots. Rabbi Akiva entered in peace and left in peace.\n\nThe usual reading treats this as a warning about mysticism: dangerous material, handle carefully, most people should stay out. That reading is not wrong, but it skips the detail the Gemara actually dwells on, which is that all four were qualified. Nobody wandered in. These were among the greatest of their generation, and three of them were damaged anyway.\n\nSo what distinguished Rabbi Akiva? The Gemara does not say he was smarter or that he knew more. It says he entered in peace and left in peace, which is a statement about the state he arrived in rather than the equipment he brought.\n\nRav Kook reads the four outcomes as four relationships to truth that is larger than you. Ben Azzai could not bear to return to ordinary life afterward. Ben Zoma could not integrate what he saw with what he already held. Acher concluded that if this is what is up there, the system below is not binding. Only Rabbi Akiva could hold something vast without either being consumed by it or using it as a reason to discard everything else.\n\nWhich means the warning in the story is not really about mysticism. It is about what happens to a person who encounters something true and bigger than their previous frame. Most of us will meet that in much smaller doses, and the same four responses are available every time.",
+    sourceWork: "Chagigah", sourceRef: "14b",
+    tags: ["daf-yomi", "machshava", "mussar"],
+  },
+  {
     author: "seferdiagrams", type: "IMAGE", ago: 6.2, hearts: 341,
     title: "The six sedarim, on one page",
     body: "New learners ask where a masechta 'lives' all the time. This is the map we hand out on day one. The mnemonic at the bottom is from Shabbos 31a. Reish Lakish reads each word of the pasuk in Yeshayahu as a hint to one seder, in order.",

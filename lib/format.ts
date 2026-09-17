@@ -59,3 +59,16 @@ export function sefariaUrl(work?: string | null, ref?: string | null): string | 
   const w = work.trim().replace(/\s+/g, "_");
   return ref ? `https://www.sefaria.org/${w}.${ref.trim()}` : `https://www.sefaria.org/${w}`;
 }
+
+/**
+ * True when a paragraph should be laid out right to left.
+ *
+ * Counts letters rather than merely detecting Hebrew: an English sentence that
+ * quotes תיקו is still English and must not flip. A Gemara passage, where the
+ * Hebrew dominates, should.
+ */
+export function isHebrewParagraph(text: string): boolean {
+  const hebrew = (text.match(/[\u0590-\u05FF]/g) ?? []).length;
+  const latin = (text.match(/[A-Za-z]/g) ?? []).length;
+  return hebrew > 0 && hebrew >= latin;
+}

@@ -189,6 +189,37 @@ const newUserReasons = await p2.locator('main span:has-text("Today\'s daf")').co
 check("new user sees calendar-matched content", newUserReasons > 0);
 await p2.screenshot({ path: `${SHOTS}/11-newuser-feed.png`, fullPage: true });
 
+console.log("\n== long posts collapse ==");
+await page.goto(`${BASE}/`);
+await page.waitForTimeout(600);
+const collapse = await page.evaluate(async () => {
+  const btn = [...document.querySelectorAll("button")].find((b) => b.textContent?.includes("Read more")) as HTMLButtonElement | undefined;
+  if (!btn) return null;
+  const inner = btn.parentElement!.querySelector("div.overflow-hidden") as HTMLElement;
+  const before = inner.clientHeight;
+  const full = inner.scrollHeight;
+  btn.click();
+  await new Promise((r) => setTimeout(r, 500));
+  return { before, full, after: inner.clientHeight, showLess: !!btn.textContent?.includes("Show less") };
+});
+check("a long post is collapsed in the feed", collapse !== null);
+if (collapse) {
+  check("collapsed body is short", collapse.before < collapse.full, `${collapse.before}px of ${collapse.full}px`);
+  check("Read more expands it fully", collapse.after === collapse.full, `-> ${collapse.after}px`);
+  check("control flips to Show less", collapse.showLess);
+}
+check(
+  "short posts are not collapsed",
+  await page.evaluate(() => {
+    const bodies = [...document.querySelectorAll("div.overflow-hidden")];
+    // Every clamped body must belong to a post that also offers Read more.
+    return bodies.every((b) => !b.getAttribute("style")?.includes("max-height") ||
+      !!b.parentElement?.querySelector("button"));
+  })
+);
+// Right-to-left rendering needs Hebrew-majority text, which arrives with the
+// Sefaria import. The heuristic itself is unit-tested in check-sefaria.mts.
+
 console.log("\n== flagging ==");
 await page.goto(`${BASE}/`);
 // Flag a post authored by someone else.

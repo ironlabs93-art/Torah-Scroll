@@ -72,6 +72,10 @@ application code changes, but it is a real step and it is not done here.
 - **Three feeds.** For You (ranked), Today's Learning (calendar matches only),
   Following (chronological).
 - **Tag and profile pages**, and source references that deep-link to Sefaria.
+- **Long posts collapse** in the feed to about five lines with a Read more control.
+  Only posts over 650 characters collapse, so a short dvar Torah still reads whole;
+  a daf or a set of mishnayos does not swallow the screen. Post pages always show
+  the full text. Hebrew-majority paragraphs render right to left in their own face.
 - **Daily texts imported from Sefaria**, so the feed is never empty.
 - **Reporting and a moderator review queue.**
 

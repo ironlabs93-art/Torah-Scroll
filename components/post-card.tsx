@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Avatar, Card, ReasonPill, TagChip } from "./ui";
 import { HeartButton, QuizCard, VideoEmbed } from "./interactions";
+import { PostBody } from "./post-body";
 import { timeAgo, parseVideo, embedUrl, sefariaUrl } from "@/lib/format";
 import type { FeedPost } from "@/lib/feed";
 
@@ -27,10 +28,13 @@ export function PostCard({
   post,
   path,
   showReasons = true,
+  fullBody = false,
 }: {
   post: FeedPost;
   path: string;
   showReasons?: boolean;
+  /** Post pages render the whole body; the feed collapses long ones. */
+  fullBody?: boolean;
 }) {
   const quiz = post.quizJson ? JSON.parse(post.quizJson) : null;
   const video = post.videoUrl ? parseVideo(post.videoUrl) : null;
@@ -86,11 +90,7 @@ export function PostCard({
           <QuizCard postId={post.id} quiz={quiz} answered={post.answered} path={path} />
         )}
 
-        {post.body && (
-          <div className="whitespace-pre-line text-[15.5px] leading-[1.6] text-ink-soft sm:text-[17px] sm:leading-[1.65]">
-            {post.body}
-          </div>
-        )}
+        {post.body && <PostBody text={post.body} alwaysExpanded={fullBody} />}
 
         {post.type === "VIDEO" && video && (
           <div className="mt-3">
@@ -152,7 +152,11 @@ export function PostCard({
           <span className="tabular-nums">{post.commentCount}</span>
         </Link>
         <span className="ml-auto pr-2 text-[11px] uppercase tracking-wider text-ink-faint/70">
-          {post.type === "TEXT" ? "Dvar Torah" : post.type.toLowerCase()}
+          {post.origin === "IMPORT"
+            ? "Source text"
+            : post.type === "TEXT"
+              ? "Dvar Torah"
+              : post.type.toLowerCase()}
         </span>
       </div>
     </Card>

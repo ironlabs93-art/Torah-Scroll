@@ -221,29 +221,35 @@ export async function buildFeed(opts: {
 }
 
 /**
- * Keeps one author or one post type from taking over the top of the feed.
- * Walks the ranked list and defers a post that would be the third in a row
- * from the same author or the same format.
+ * Keeps one author or one format from taking three slots in a row.
+ *
+ * Written as a bounded lookahead rather than a deferral queue: an earlier
+ * version pushed every blocked post onto a held list that only drained once the
+ * pool emptied, which meant that whenever one type dominated the ranking (and
+ * TEXT usually does) a large share of high-scoring posts got shunted to the
+ * tail of the feed. Scanning a short window keeps the order close to the score
+ * order and never strands anything.
  */
-function diversify(posts: FeedPost[]): FeedPost[] {
-  const out: FeedPost[] = [];
-  const held: FeedPost[] = [];
-  const pool = [...posts];
+const LOOKAHEAD = 6;
 
-  while (pool.length || held.length) {
-    const next = pool.shift() ?? held.shift();
-    if (!next) break;
+function diversify(posts: FeedPost[]): FeedPost[] {
+  const pool = [...posts];
+  const out: FeedPost[] = [];
+
+  while (pool.length) {
     const lastTwo = out.slice(-2);
-    const sameAuthor = lastTwo.length === 2 && lastTwo.every((p) => p.authorId === next.authorId);
-    const sameType = lastTwo.length === 2 && lastTwo.every((p) => p.type === next.type);
-    if ((sameAuthor || sameType) && pool.length) {
-      held.push(next);
-      continue;
-    }
-    out.push(next);
-    if (held.length && pool.length === 0) {
-      out.push(...held.splice(0));
-    }
+    const blocked = (p: FeedPost) =>
+      lastTwo.length === 2 &&
+      (lastTwo.every((x) => x.authorId === p.authorId) || lastTwo.every((x) => x.type === p.type));
+
+    let pick = 0;
+    const limit = Math.min(LOOKAHEAD, pool.length);
+    while (pick < limit && blocked(pool[pick])) pick++;
+    // Nothing in the window breaks the run, so take the best one regardless
+    // rather than distorting the ranking any further.
+    if (pick === limit) pick = 0;
+
+    out.push(pool.splice(pick, 1)[0]);
   }
   return out;
 }

@@ -70,7 +70,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
             Back to the feed
           </Link>
 
-          <PostCard post={feedPost} path={path} showReasons={false} />
+          <PostCard post={feedPost} path={path} showReasons={false} fullBody />
 
           {user && user.id !== post.authorId && (
             <div className="mt-3 flex justify-end">

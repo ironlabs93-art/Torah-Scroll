@@ -4,6 +4,7 @@
  *   npm run test:sefaria -- --live   hit the real API and print what comes back
  */
 import { parseText, stripHtml, toSefariaRef, excerpt, fetchText, httpFetcher } from "../lib/sefaria.js";
+import { isHebrewParagraph } from "../lib/format.js";
 
 let fails = 0;
 function check(name: string, ok: boolean, detail = "") {
@@ -68,6 +69,14 @@ check("empty object", parseText({}, "x") === null);
 check("empty bodies", parseText({ text: [], he: [] }, "x") === null);
 check("string body accepted", parseText({ text: "just a string" }, "x")?.en[0] === "just a string");
 check("ref falls back", parseText({ text: "a" }, "Berakhot 2a")?.ref === "Berakhot 2a");
+
+console.log("\n== paragraph direction ==");
+check("plain english is ltr", !isHebrewParagraph("The Gemara asks what the reason is."));
+check("hebrew passage is rtl", isHebrewParagraph("מתני׳ הנוטל אם על הבנים רבי יהודה אומר לוקה"));
+check("english quoting one hebrew word stays ltr",
+  !isHebrewParagraph("I never know what to do when the Gemara says תיקו and moves on."));
+check("empty string is ltr", !isHebrewParagraph(""));
+check("numbers and punctuation alone are ltr", !isHebrewParagraph("2a. 14b, 1:3"));
 
 console.log("\n== excerpting ==");
 const long = Array.from({ length: 30 }, (_, i) => "Line " + i + " " + "x".repeat(60));
